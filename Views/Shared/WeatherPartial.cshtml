@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Weather Forecast";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Moja Aplikacja</title>
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <main>
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <div class="weather-info">
+                <h2>Pogoda w Krakowie</h2>
+                <p><strong>Temperatura:</strong> @ViewBag.RoundedTemperature°C</p>
+            </div>
+        }
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Projekt.Models.CartItem>
+
+<h2>Twój Koszyk</h2>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produkt</th>
+                <th>Ilość</th>
+                <th>Cena za sztukę</th>
+                <th>Łączna Cena</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Product.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Product.Price</td>
+                    <td>@(item.Quantity * item.Product.Price)</td>
+                    <td>
+                        <form asp-action="RemoveFromCart" method="post">
+                            <input type="hidden" name="id" value="@item.ProductId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-right">
+        <h4>
+            Łączna wartość koszyka:
+            <strong>
+                @Model.Sum(item => item.Quantity * item.Product.Price)
+            </strong>
+        </h4>
+    </div>
+}
+else
+{
+    <p>Twój koszyk jest pusty.</p>
+}

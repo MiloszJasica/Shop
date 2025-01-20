@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Projekt.Models.Product>
+
+@{
+    ViewData["Title"] = "Product List";
+    bool isLoggedIn = User.Identity.IsAuthenticated;
+}
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Moja Aplikacja</title>
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <h1>@ViewData["Title"]</h1>
+    </header>
+    <main>
+        <form method="get" asp-action="Index">
+            <div class="form-group">
+                <label for="categoryFilter">Category Filter:</label>
+                <select id="categoryFilter" name="categoryFilter" class="form-control">
+                    <option value="">All Categories</option>
+                    @foreach (var category in ViewBag.Categories as List<string>)
+                    {
+                        <option value="@category" selected="@(category == ViewBag.CategoryFilter ? "selected" : null)">@category</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary mt-2">Apply Filter</button>
+            </div>
+        </form>
+
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <td>@product.Name</td>
+                        <td>@product.Price</td>
+                        <td>@product.Description</td>
+                        <td>@product.Category</td>
+                        <td>
+                            @if (isLoggedIn)
+                            {
+                                @if (User.IsInRole("Administrator"))
+                                {
+                                    <a href="@Url.Action("Edit", "Products", new { id = product.Id })" class="btn btn-warning">Edit</a>
+                                    <a href="@Url.Action("Delete", "Products", new { id = product.Id })" class="btn btn-danger">Delete</a>
+                                }
+                                @if (User.IsInRole("Client"))
+                                {
+                                    <a href="@Url.Action("AddToCart", "Cart", new { id = product.Id })" class="btn btn-primary">Add To Cart</a>
+                                }
+                            }
+                            else
+                            {
+                                <a href="~/Account/Login" class="btn btn-primary">Login for more options</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (isLoggedIn && User.IsInRole("Administrator"))
+        {
+            <a href="@Url.Action("Create", "Products")" class="btn btn-success mt-3">Add New Product</a>
+        }
+    </main>
+    <footer>
+        <p>&copy; @DateTime.Now.Year - Moja Aplikacja</p>
+    </footer>
+</body>
+</html>
